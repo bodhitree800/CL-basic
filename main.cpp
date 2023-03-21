@@ -32,12 +32,13 @@ void InitArray(float* pInput, int count)
 {
     CHECK_NULL(pInput)
 
-    srand((unsigned)time(NULL));
+    // srand((unsigned)time(NULL));
 
     for (int i = 0; i < count; i++)
     {
         pInput[i] = rand();        
     }
+    printf("%f \n", pInput[0]);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -84,6 +85,7 @@ void SimpleFunction(float* input1, float* input2, float* output, int count)
     {
         output[i] = input1[i] + input2[i];
     }
+    printf("\n%f + %f = %f", input1[0], input2[0], output[0]);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -127,7 +129,7 @@ void SimpleFunctionOpenCL(cl_mem input1, cl_mem input2, cl_mem output, int count
 // 
 int main(void)
 {
-	int count = 4096;
+	int count = 40960000;
 	
 	float* input1 = NULL;    
 	float* input2 = NULL;  
@@ -201,6 +203,10 @@ int main(void)
 	dInput2 = CreateDeviceBuffer(context, count * sizeof(float));
     dOutput = CreateDeviceBuffer(context, count * sizeof(float));
 
+
+for(int i = 0; i < 10 ; i++)
+{
+    printf("\n -------------------TEST %d----------------------", i);
     // ________________________________________________________________________
     // Do processing on CPU
     // ________________________________________________________________________
@@ -258,6 +264,8 @@ int main(void)
     elapsedTimeInMs = sdkGetTimerValue(&timer);
     printf("\n%-55s %10.4f ms", "Transfer data from GPU ", elapsedTimeInMs);
     
+    printf("\n gpuOuput %f", gpuOutput[0]);
+
     printf("\nChecking the last OpenCL output...");
     if (!CompareArrays(output, gpuOutput, count))
         printf("\nIncorrect OpenCL output.");
@@ -267,7 +275,7 @@ int main(void)
     elapsedTimeInMs = sdkGetTimerValue(&gpuProcTimer);
     printf("\n%-55s %10.4f ms", "TOTAL GPU PROC TIME", elapsedTimeInMs);
     printf("\n");
-
+}
     // Free allocated resources
     FreeArray(&input1);  
 	FreeArray(&input2); 
