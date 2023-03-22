@@ -36,7 +36,6 @@ void InitArray(float* pInput, int count)
     {
         pInput[i] = rand();        
     }
-    // printf("%f \n", pInput[0]);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -110,7 +109,7 @@ void SimpleFunctionOpenCL(cl_mem input1, cl_mem input2, cl_mem output, int count
 
     // Specify work-item configuration
     workDim = 1;
-    localWorkSize[0] = 256;
+    localWorkSize[0] = 384; //256;
     localWorkSize[1] = 0;
     localWorkSize[2] = 0;
     globalWorkSize[0] = ((count + localWorkSize[0] - 1) / localWorkSize[0]) * localWorkSize[0];
@@ -254,7 +253,6 @@ for(int i = 0; i < 10 ; i++)
     sdkStopTimer(&timer);
     elapsedTimeInMs = sdkGetTimerValue(&timer);
     printf("\n%-55s %10.4f ms", "SimpleFunction (GPU)", elapsedTimeInMs);
-
     // [GPU] Copy data from device to host
     // ________________________________________________________________________
     sdkStartTimer(&timer);
