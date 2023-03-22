@@ -32,13 +32,11 @@ void InitArray(float* pInput, int count)
 {
     CHECK_NULL(pInput)
 
-    // srand((unsigned)time(NULL));
-
     for (int i = 0; i < count; i++)
     {
         pInput[i] = rand();        
     }
-    printf("%f \n", pInput[0]);
+    // printf("%f \n", pInput[0]);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -163,10 +161,12 @@ int main(void)
     sdkCreateTimer(&gpuProcTimer);
     sdkCreateTimer(&cpuProcTimer);
 	
+    srand((unsigned)time(NULL));
+
 	AllocArray(&input1, count);
 	AllocArray(&input2, count);
-    InitArray(input1, count);
-	InitArray(input2, count);
+    // InitArray(input1, count);
+	// InitArray(input2, count);
     
     AllocArray(&output, count);
     AllocArray(&gpuOutput, count);  
@@ -206,7 +206,9 @@ int main(void)
 
 for(int i = 0; i < 10 ; i++)
 {
-    printf("\n -------------------TEST %d----------------------", i);
+    printf("\n -------------------TEST %d----------------------", i + 1);
+    InitArray(input1, count);
+	InitArray(input2, count);
     // ________________________________________________________________________
     // Do processing on CPU
     // ________________________________________________________________________
