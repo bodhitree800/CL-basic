@@ -3,7 +3,7 @@
  * www.streamcomputing.eu
  ******************************************************************************/
 
-__kernel void SimpleFunction(__global float* input1, __global float* input2, __global float* output, int count)
+__kernel void SimpleFunction(__global int* input1, __global int* input2, __global int* output, int count)
 {
 	int i = get_global_id(0);
 	

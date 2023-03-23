@@ -18,17 +18,17 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 // Allocates memory for an array.
-void AllocArray(float** pInput, int count)
+void AllocArray(int** pInput, int count)
 {
     CHECK_NULL(pInput)
 
-    *pInput = (float*)malloc(count * sizeof(float));
+    *pInput = (int*)malloc(count * sizeof(int));
     CHECK_NULL(*pInput)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Initializes an array.
-void InitArray(float* pInput, int count)
+void InitArray(int* pInput, int count)
 {
     CHECK_NULL(pInput)
 
@@ -40,7 +40,7 @@ void InitArray(float* pInput, int count)
 
 ///////////////////////////////////////////////////////////////////////////////
 // Frees an image buffer.
-void FreeArray(float** pInput)
+void FreeArray(int** pInput)
 {
     CHECK_NULL(pInput)
 
@@ -53,7 +53,7 @@ void FreeArray(float** pInput)
 
 ///////////////////////////////////////////////////////////////////////////////
 // Compares two images pixel by pixel.
-int CompareArrays(float* input1, float* input2, int count)
+int CompareArrays(int* input1, int* input2, int count)
 {
     CHECK_NULL(input1)
     CHECK_NULL(input2)
@@ -72,7 +72,7 @@ int CompareArrays(float* input1, float* input2, int count)
 
 ///////////////////////////////////////////////////////////////////////////////
 // Launches the OpenCL kernel for doing color balance.
-void SimpleFunction(float* input1, float* input2, float* output, int count)
+void SimpleFunction(int* input1, int* input2, int* output, int count)
 {
     CHECK_NULL(input1);  
 	CHECK_NULL(input2);  
@@ -82,7 +82,7 @@ void SimpleFunction(float* input1, float* input2, float* output, int count)
     {
         output[i] = input1[i] + input2[i];
     }
-    printf("\n%f + %f = %f", input1[0], input2[0], output[0]);
+    printf("\n%d + %d = %d", input1[0], input2[0], output[0]);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -128,10 +128,10 @@ int main(void)
 {
 	int count = 40960000;
 	
-	float* input1 = NULL;    
-	float* input2 = NULL;  
-    float* output = NULL;
-    float* gpuOutput = NULL;  
+	int* input1 = NULL;    
+	int* input2 = NULL;  
+    int* output = NULL;
+    int* gpuOutput = NULL;  
 	
     StopWatchInterface *timer = NULL;
     StopWatchInterface *cpuProcTimer = NULL;
@@ -198,9 +198,9 @@ int main(void)
     simpleFunctionKernel = CreateKernel(program, "SimpleFunction");    
 
     // Create OpenCL buffers on device
-    dInput1 = CreateDeviceBuffer(context, count * sizeof(float));
-	dInput2 = CreateDeviceBuffer(context, count * sizeof(float));
-    dOutput = CreateDeviceBuffer(context, count * sizeof(float));
+    dInput1 = CreateDeviceBuffer(context, count * sizeof(int));
+	dInput2 = CreateDeviceBuffer(context, count * sizeof(int));
+    dOutput = CreateDeviceBuffer(context, count * sizeof(int));
 
 
 for(int i = 0; i < 10 ; i++)
@@ -236,8 +236,8 @@ for(int i = 0; i < 10 ; i++)
     // ________________________________________________________________________
     sdkStartTimer(&timer);
     {
-        CopyHostToDevice(input1, dInput1, count * sizeof(float), queue, CL_TRUE);
-		CopyHostToDevice(input2, dInput2, count * sizeof(float), queue, CL_TRUE); 
+        CopyHostToDevice(input1, dInput1, count * sizeof(int), queue, CL_TRUE);
+		CopyHostToDevice(input2, dInput2, count * sizeof(int), queue, CL_TRUE); 
     }
     sdkStopTimer(&timer);
     elapsedTimeInMs = sdkGetTimerValue(&timer);
@@ -257,14 +257,14 @@ for(int i = 0; i < 10 ; i++)
     // ________________________________________________________________________
     sdkStartTimer(&timer);
     {
-        CopyDeviceToHost(dOutput, gpuOutput, count * sizeof(float), queue, CL_TRUE);        
+        CopyDeviceToHost(dOutput, gpuOutput, count * sizeof(int), queue, CL_TRUE);        
     }
     sdkStopTimer(&timer);
     sdkStopTimer(&gpuProcTimer);
     elapsedTimeInMs = sdkGetTimerValue(&timer);
     printf("\n%-55s %10.4f ms", "Transfer data from GPU ", elapsedTimeInMs);
     
-    printf("\n gpuOuput %f", gpuOutput[0]);
+    printf("\n gpuOuput %d", gpuOutput[0]);
 
     printf("\nChecking the last OpenCL output...");
     if (!CompareArrays(output, gpuOutput, count))
